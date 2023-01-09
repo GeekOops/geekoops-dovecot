@@ -1,0 +1,52 @@
+- name: enable server:mail repository. It has a newer verion of dovecot
+  community.general.zypper_repository:
+    name: server:mail
+    repo: 'https://download.opensuse.org/repositories/server:/mail/15.4/'
+    state: present
+    runrefresh: true
+    auto_import_keys: yes
+
+- name: Refresh repos and update packages
+  community.general.zypper:
+    name: '*'
+    state: latest
+    update_cache: yes
+
+- name: Install packages
+  ansible.builtin.package:
+    name:
+      - dovecot
+      - dovecot23-backend-mysql
+    state: present
+
+- name: create {{ mail_db_name }} database
+  community.mysql.mysql_db:
+    name: "{{ mail_db_name }}"
+    encoding: "utf8"
+    state: present
+
+- include_tasks: create_mysql_dbs.yml
+  when: mail_sql_backup| length == 0
+
+# Copy database dump file to remote host and restore it to database 'my_db'
+- name: Copy database dump file
+  ansible.builtin.copy:
+    src: "{{ mail_sqlbackup }}"
+    dest: /tmp
+  when: mail_sql_backup| length > 0
+
+- name: create {{ mail_db_user }} database user
+  community.mysql.mysql_user:
+    name: "{{ mail_db_user }}"
+    password: "{{ mail_db_pw }}"
+    state: present
+
+    priv:
+      '{{ mail_db_name }}.*:SELECT,GRANT'
+
+- name: optionally play back an SQL backup
+  community.mysql.mysql_db:
+    name: "{{ mail_db_name }}"
+    state: import
+    target: "/tmp/{{ nc_sqlbackup }}"
+  when: mail_sql_backup| length > 0

@@ -1,0 +1,5 @@
+---
+mail_db_user: "vmail"
+mail_db_pw: "Maildb_pw"
+mail_db_name: "vmail"
+mail_sql_backup: ""
