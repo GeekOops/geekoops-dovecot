@@ -2,7 +2,8 @@
 
 # ansible role for setting up Dovecot
 
-Configurable ansible role for setting up dovecot. users can be configured to be taken from MySQL or LDAP
+Configurable ansible role for setting up dovecot. users can be configured to be taken from MySQL or LDAP.
+I usually try to preserve as much default configuration as possible.
 Works with
 
 - openSUSE Leap 15.4 -> tested
