@@ -7,3 +7,4 @@
     echo '`policy` enum("none", "may", "encrypt", "dane", "dane-only", "fingerprint", "verify", "secure") NOT NULL,' >> /tmp/dbs.sql
     echo ' `params` varchar(255), PRIMARY KEY (`id`), UNIQUE KEY (`domain`));' >> /tmp/dbs.sql
     mysql {{ mail_db_name }} < /tmp/dbs.sql
+    rm /tmp/dbs.sql

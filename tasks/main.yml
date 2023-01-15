@@ -63,3 +63,52 @@
     home: "{{ mail_vmail_directory }}"
     groups: "{{ mail_vmail_user }}"
   when: ansible_facts.getent_passwd[mail_vmail_user] is not defined
+
+- name: Create main dovecot configuration. The filename is chosen, such that we obtain the expected ordering
+  ansible.builtin.template:
+    src: local.conf.j2
+    dest: /etc/dovecot/conf.d/zzz-local.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Create additional SQL configuration (The actual query statements)
+  ansible.builtin.template:
+    src: "{{item}}.j2"
+    dest: "/etc/dovecot/{{item}}"
+    owner: root
+    group: root
+    mode: '0644'
+  loop:
+    - dovecot-dict-sql.conf.ext
+    - dovecot-sql.conf.ext
+
+#- name: Create additional SQL configuration
+#  ansible.builtin.template:
+#    src: auth-sql.conf.j2
+#    dest: /etc/dovecot/conf.d/auth-sql.conf
+#    owner: root
+#    group: root
+#    mode: '0644'
+
+- name: Create additional LDAP configuration(Our implementation is different enough from the default one.)
+  ansible.builtin.template:
+    src: auth-ldap.conf.ext.j2
+    dest: /etc/dovecot/conf.d/auth-ldap.conf.ext
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Create additional LDAP configuration (The actual query statements)
+  ansible.builtin.template:
+    src: dovecot-ldap.conf.ext.j2
+    dest: /etc/dovecot/dovecot-ldap.conf.ext
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Ensure that the system.conf extension by dovecot on OpenSuSE is not loaded
+  ansible.builtin.lineinfile:
+    path: /etc/dovecot/conf.d/10-auth.conf
+    regexp: '^!include auth-system.conf.ext'
+    line: '#!include auth-system.conf.ext'
