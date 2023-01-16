@@ -17,7 +17,14 @@
     name:
       - dovecot
       - dovecot23-backend-mysql
+      - haveged
     state: present
+
+- name: start haveged entropy daemon
+  ansible.builtin.systemd:
+    enabled: true
+    state: started
+    name: haveged
 
 - name: create {{ mail_db_name }} database
   community.mysql.mysql_db:
@@ -31,7 +38,7 @@
 # Copy database dump file to remote host and restore it to database 'my_db'
 - name: Copy database dump file
   ansible.builtin.copy:
-    src: "{{ mail_sqlbackup }}"
+    src: "{{ mail_sql_backup }}"
     dest: /tmp
   when: mail_sql_backup| length > 0
 
@@ -47,7 +54,7 @@
   community.mysql.mysql_db:
     name: "{{ mail_db_name }}"
     state: import
-    target: "/tmp/{{ nc_sqlbackup }}"
+    target: "/tmp/{{ mail_sql_backup }}"
   when: mail_sql_backup| length > 0
 
 - name: Check if vmail user exists
@@ -112,3 +119,15 @@
     path: /etc/dovecot/conf.d/10-auth.conf
     regexp: '^!include auth-system.conf.ext'
     line: '#!include auth-system.conf.ext'
+
+- name: Create diffie Hellman Entropy file
+  ansible.builtin.command: openssl dhparam -out /etc/dovecot/dh4096.pem 4096 
+
+- name: create cronjob for updating DH parameters
+  ansible.builtin.cron:
+    name: dh4096
+    state: present
+    special_time: weekly
+    user: root
+    job: openssl dhparam -out /etc/dovecot/dh4096.pem 4096 2> /dev/null
+
