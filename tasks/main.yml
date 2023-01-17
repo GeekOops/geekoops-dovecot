@@ -138,6 +138,7 @@
     mode: '0775'
     owner: "{{ mail_vmail_user }}"
     group: "{{ mail_vmail_user }}"
+  when: mail_setup_rspam_filter  == true
 
 
 - name: Copy scripts for spam detection with rspamd
@@ -151,3 +152,4 @@
     - learn-ham.sieve
     - learn-spam.sieve
     - spam-global.sieve
+  when: mail_setup_rspam_filter  == true

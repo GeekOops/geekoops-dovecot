@@ -14,3 +14,4 @@ mail_ldap_base: "dc=example,dc=org"
 mail_ldap_admin_dn: "cn=Administrator,{{ mail_ldap_base }}"
 mail_ldap_pw: "secure_ldap_pw"
 mail_ldap_passfilter: "(&(objectClass=posixAccount)(uid=%n))"
+mail_setup_rspam_filter: true
