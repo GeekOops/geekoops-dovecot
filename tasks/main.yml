@@ -131,6 +131,14 @@
     user: root
     job: openssl dhparam -out /etc/dovecot/dh4096.pem 4096 2> /dev/null
 
+- name: set rights on maildirs folder
+  ansible.builtin.file:
+    path: "{{ mail_vmail_directory }}"
+    state: directory
+    mode: '0770'
+    owner: "{{ mail_vmail_user }}"
+    group: "{{ mail_vmail_user }}"
+
 - name: create sieve folder
   ansible.builtin.file:
     path: "{{ mail_vmail_directory }}/sieve/global"
