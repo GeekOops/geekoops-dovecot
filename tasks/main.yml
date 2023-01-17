@@ -131,3 +131,23 @@
     user: root
     job: openssl dhparam -out /etc/dovecot/dh4096.pem 4096 2> /dev/null
 
+- name: create sieve folder
+  ansible.builtin.file:
+    path: "{{ mail_vmail_directory }}/sieve/global"
+    state: directory
+    mode: '0775'
+    owner: "{{ mail_vmail_user }}"
+    group: "{{ mail_vmail_user }}"
+
+
+- name: Copy scripts for spam detection with rspamd
+  ansible.builtin.template:
+    src: "{{item}}.j2"
+    dest: "{{ mail_vmail_directory }}/sieve/global/{{ item }}"
+    owner: root
+    group: root
+    mode: '0644'
+  loop:
+    - learn-ham.sieve
+    - learn-spam.sieve
+    - spam-global.sieve
