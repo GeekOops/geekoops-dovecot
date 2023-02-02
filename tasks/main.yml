@@ -161,3 +161,9 @@
     - learn-spam.sieve
     - spam-global.sieve
   when: mail_setup_rspam_filter  == true
+
+- name: Ensure AppArmor knows about our location for the virtual mailboxes
+  ansible.builtin.lineinfile:
+    path: /etc/apparmor.d/local/usr.lib.dovecot.lmtp
+    state: present
+    line: '{{ mail_vmail_directory }}/** rwkl,'
