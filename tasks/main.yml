@@ -164,6 +164,9 @@
 
 - name: Ensure AppArmor knows about our location for the virtual mailboxes
   ansible.builtin.lineinfile:
-    path: /etc/apparmor.d/local/usr.lib.dovecot.lmtp
+    path: /etc/apparmor.d/local/usr.lib.dovecot.{{ item }}
     state: present
     line: '{{ mail_vmail_directory }}/** rwkl,'
+  loop:
+    - lmtp
+    - imap
