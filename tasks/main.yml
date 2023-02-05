@@ -170,3 +170,7 @@
   loop:
     - lmtp
     - imap
+    - deliver
+    - dovecot-lda
+    - managesieve
+    - pop3
