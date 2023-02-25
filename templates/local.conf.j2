@@ -2,7 +2,7 @@
 ## Misc:
 # Address to use when sending rejection mails.
 # Default is postmaster@%d. %d expands to recipient domain.
-postmaster_address = postmaster@florian-goth.de
+postmaster_address = {{ mail_postmaster }}
 
 ## active protocols
 ##
@@ -171,7 +171,7 @@ mail_privileged_group = {{ mail_vmail_user }}
 
 mail_home = {{  mail_vmail_directory }}/mailboxes/%d/%n
 mail_location = maildir:~/mail:LAYOUT=fs
-first_valid_uid = 500
+first_valid_uid = 450
 
 ##
 ## Mailbox configuration
