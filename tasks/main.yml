@@ -79,16 +79,21 @@
     group: root
     mode: '0644'
 
-- name: Create additional SQL configuration (The actual query statements)
+- name: Create additional SQL mapping configuration
   ansible.builtin.template:
-    src: "{{item}}.j2"
-    dest: "/etc/dovecot/{{item}}"
+    src: "dovecot-dict-sql.conf.ext.j2"
+    dest: "/etc/dovecot/dovecot-dict-sql.conf.ext"
     owner: root
     group: root
     mode: '0644'
-  loop:
-    - dovecot-dict-sql.conf.ext
-    - dovecot-sql.conf.ext
+
+- name: Create additional SQL configuration (The actual query statements)
+  ansible.builtin.template:
+    src: "dovecot-sql.conf.ext.j2"
+    dest: "/etc/dovecot/dovecot-sql.conf.ext"
+    owner: root
+    group: root
+    mode: '0600'
 
 #- name: Create additional SQL configuration
 #  ansible.builtin.template:
@@ -112,7 +117,7 @@
     dest: /etc/dovecot/dovecot-ldap.conf.ext
     owner: root
     group: root
-    mode: '0644'
+    mode: '0600'
 
 - name: Ensure that the system.conf extension by dovecot on OpenSuSE is not loaded
   ansible.builtin.lineinfile:
@@ -135,7 +140,7 @@
   ansible.builtin.file:
     path: "{{ mail_vmail_directory }}"
     state: directory
-    mode: '0770'
+    mode: '0771'
     owner: "{{ mail_vmail_user }}"
     group: "{{ mail_vmail_user }}"
 
