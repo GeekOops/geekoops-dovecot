@@ -179,3 +179,9 @@
     - dovecot-lda
     - managesieve
     - pop3
+
+- name: Ensure AppArmor lets us access rspamc
+  ansible.builtin.lineinfile:
+    path: /etc/apparmor.d/local/usr.lib.dovecot.imap
+    state: present
+    line: '/usr/bin/rspamc rUx,'
