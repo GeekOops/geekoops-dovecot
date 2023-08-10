@@ -185,3 +185,15 @@
     path: /etc/apparmor.d/local/usr.lib.dovecot.imap
     state: present
     line: '/usr/bin/rspamc rUx,'
+
+- name: Apparmor rule for something in /proc
+  ansible.builtin.lineinfile:
+    path: /etc/apparmor.d/local/usr.lib.dovecot.imap
+    state: present
+    line: '@{PROC}/@{pid}/stat r,'
+
+- name: Apparmor rule for something in /proc
+  ansible.builtin.lineinfile:
+    path: /etc/apparmor.d/local/usr.lib.dovecot.lmtp
+    state: present
+    line: '@{PROC}/@{pid}/stat r,'
