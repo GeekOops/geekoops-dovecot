@@ -106,7 +106,7 @@ default_pass_scheme = SHA512-CRYPT
 #
 password_query = \
   SELECT username AS user, domain, password \
-  FROM accounts WHERE username = '%n' AND domain = '%d' AND enabled = true;
+  FROM accounts WHERE username = '%Ln' AND domain = '%Ld' AND enabled = true;
 
 # userdb query to retrieve the user information. It can return fields:
 #   uid - System UID (overrides mail_uid setting)
@@ -127,7 +127,7 @@ password_query = \
 #user_query = \
 #  SELECT home, uid, gid \
 #  FROM users WHERE username = '%n' AND domain = '%d'
-user_query = SELECT concat('*:storage=', quota, 'M') AS quota_rule FROM accounts WHERE username = '%n' AND domain = '%d' AND sendonly = false;
+user_query = SELECT concat('*:storage=', quota, 'M') AS quota_rule FROM accounts WHERE username = '%Ln' AND domain = '%Ld' AND sendonly = false;
 # If you wish to avoid two SQL lookups (passdb + userdb), you can use
 # userdb prefetch instead of userdb sql in dovecot.conf. In that case you'll
 # also have to return userdb fields in password_query prefixed with "userdb_"
