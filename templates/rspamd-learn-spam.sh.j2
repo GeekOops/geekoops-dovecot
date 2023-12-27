@@ -1,0 +1,4 @@
+#!/bin/bash
+inputmail=`/usr/bin/cat`
+export OPENBLAS_NUM_THREADS=1
+echo "${inputmail}" | /usr/bin/rspamc learn_spam

@@ -167,6 +167,17 @@
     - spam-global.sieve
   when: mail_setup_rspam_filter  == true
 
+- name: Copy wrapper for spam detection with rspamd
+  ansible.builtin.template:
+    src: "{{item}}.j2"
+    dest: "/usr/bin/{{ item }}"
+    owner: "{{ mail_vmail_user }}"
+    group: root
+    mode: '0750'
+  loop:
+    - rspamd-learn-spam.sh
+  when: mail_setup_rspam_filter  == true
+
 - name: Ensure AppArmor knows about our location for the virtual mailboxes
   ansible.builtin.lineinfile:
     path: /etc/apparmor.d/local/usr.lib.dovecot.{{ item }}
@@ -185,6 +196,12 @@
     path: /etc/apparmor.d/local/usr.lib.dovecot.imap
     state: present
     line: '/usr/bin/rspamc rUx,'
+
+- name: Ensure AppArmor lets us access our rspamc wrapper scripts
+  ansible.builtin.lineinfile:
+    path: /etc/apparmor.d/local/usr.lib.dovecot.imap
+    state: present
+    line: '/usr/bin/rspamd-* rUx,'
 
 - name: Apparmor rule for something in /proc
   ansible.builtin.lineinfile:
